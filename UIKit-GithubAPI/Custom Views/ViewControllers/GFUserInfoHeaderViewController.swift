@@ -69,12 +69,12 @@ class GFUserInfoHeaderViewController: UIViewController {
             
             usernameLabel.topAnchor.constraint(equalTo: avatarImageView.topAnchor),
             usernameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: textImagePadding),
-            usernameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            usernameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             usernameLabel.heightAnchor.constraint(equalToConstant: 38),
             
             nameLabel.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor, constant: 8),
             nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: textImagePadding),
-            nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             nameLabel.heightAnchor.constraint(equalToConstant: 20),
             
             locationImageView.bottomAnchor.constraint(equalTo: avatarImageView.bottomAnchor),
@@ -84,12 +84,12 @@ class GFUserInfoHeaderViewController: UIViewController {
             
             locationLabel.centerYAnchor.constraint(equalTo: locationImageView.centerYAnchor),
             locationLabel.leadingAnchor.constraint(equalTo: locationImageView.leadingAnchor, constant: 30),
-            locationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            locationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             locationLabel.heightAnchor.constraint(equalToConstant: 20),
             
             bioLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: textImagePadding),
             bioLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
-            bioLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bioLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             bioLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 60),
         ])
     }
@@ -105,6 +105,7 @@ struct GFUserInfoHeaderViewControllerPreview: UIViewControllerRepresentable {
         let dummyUser = User(
             login: "naelafauzul",
             avatarUrl: "https://avatars.githubusercontent.com/u/583231?v=4",
+            bio: "Swift Developer akhrihriqjrdlkqw dekjfjhewwbgfhkjewfjhwef qrgjhewgrjhwerjhwefwjhrkwhr rkgwrgkwwebrw rkgekrgkegrkhwebr hbjhh",
             publicRepos: 42,
             publicGists: 10,
             htmlUrl: "https://github.com/naelafauzul",

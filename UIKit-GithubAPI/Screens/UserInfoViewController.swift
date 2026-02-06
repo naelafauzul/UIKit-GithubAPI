@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol UserInfoViewControllerDelegate: AnyObject {
+    func didTapGitHubProfile(for user: User)
+    func didTapGetFollowers(for user: User)
+}
+
 class UserInfoViewController: UIViewController {
     
     let headerView = UIView()
@@ -16,6 +21,7 @@ class UserInfoViewController: UIViewController {
     var itemViews : [UIView] = []
     
     var username: String!
+    weak var delegate: FollowersListVCDelegate!
     
     init(username: String) {
         self.username = username
@@ -52,17 +58,26 @@ class UserInfoViewController: UIViewController {
             
             switch result {
             case .success(let user):
-                DispatchQueue.main.async {
-                    self.add(childVC: GFUserInfoHeaderViewController(user: user), to: self.headerView)
-                    self.add(childVC: GFRepoItemViewController(user: user), to: self.itemViewOne)
-                    self.add(childVC: GFRepoItemViewController(user: user), to: self.itemViewTwo)
-                    self.dateLabel.text = "GitHub Since: \(user.createdAt.convertToDisplayFormat())"
-                }
+                DispatchQueue.main.async { self.configureUIElements(with: user) }
             case .failure(let error):
                 self.presentGFAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "OK")
             }
         }
+    }
+    
+    func configureUIElements(with user: User) {
         
+        let repoItemVC = GFRepoItemViewController(user: user)
+        repoItemVC.delegate = self
+        
+        let followerItemVC = GFFollowerItemViewController(user: user)
+        followerItemVC.delegate = self
+        
+        self.add(childVC: GFUserInfoHeaderViewController(user: user), to: self.headerView)
+        self.add(childVC: repoItemVC, to: self.itemViewOne)
+        self.add(childVC: followerItemVC, to: self.itemViewTwo)
+        
+        self.dateLabel.text = "GitHub Since: \(user.createdAt.convertToDisplayFormat())"
     }
     
     func layoutUI() {
@@ -77,15 +92,23 @@ class UserInfoViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             headerView.heightAnchor.constraint(equalToConstant: 180),
             
             itemViewOne.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: padding),
+            itemViewOne.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            itemViewOne.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             itemViewOne.heightAnchor.constraint(equalToConstant: itemHeight),
             
             itemViewTwo.topAnchor.constraint(equalTo: itemViewOne.bottomAnchor, constant: padding),
+            itemViewTwo.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            itemViewTwo.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             itemViewTwo.heightAnchor.constraint(equalToConstant: itemHeight),
             
             dateLabel.topAnchor.constraint(equalTo: itemViewTwo.bottomAnchor, constant: padding),
+            dateLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            dateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             dateLabel.heightAnchor.constraint(equalToConstant: 18)
             
         ])
@@ -94,12 +117,40 @@ class UserInfoViewController: UIViewController {
     func add(childVC: UIViewController, to containerVC: UIView) {
         addChild(childVC)
         containerVC.addSubview(childVC.view)
-        childVC.view.frame = containerVC.bounds
+        childVC.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            childVC.view.topAnchor.constraint(equalTo: containerVC.topAnchor),
+            childVC.view.leadingAnchor.constraint(equalTo: containerVC.leadingAnchor),
+            childVC.view.trailingAnchor.constraint(equalTo: containerVC.trailingAnchor),
+            childVC.view.bottomAnchor.constraint(equalTo: containerVC.bottomAnchor)
+        ])
+
         childVC.didMove(toParent: self)
     }
     
     @objc func dismissViewController() {
         dismiss(animated: true)
+    }
+}
+
+extension UserInfoViewController: UserInfoViewControllerDelegate {
+    
+    func didTapGitHubProfile(for user: User) {
+        guard let url = URL(string: user.htmlUrl) else {
+            presentGFAlertOnMainThread(title: "Invalid URL", message: "The user attached to this user is invalid.", buttonTitle: "OK")
+            return
+        }
+        presentSafariVC(with: url)
+    }
+    
+    func didTapGetFollowers(for user: User) {
+        guard user.followers != 0 else {
+            presentGFAlertOnMainThread(title: "No Followers", message: "This user has no followers yet 😔.", buttonTitle: "So sad")
+            return
+        }
+        delegate.didRequestFollowers(for: user.login)
+        dismissViewController()
     }
 }
 

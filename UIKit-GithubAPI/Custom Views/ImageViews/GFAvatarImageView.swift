@@ -30,8 +30,7 @@ class GFAvatarImageView: UIImageView {
         
     }
     
-    func downloadImage(from urlString: String) {
-        
+    func downloadImage(from urlString: String, completion: (() -> Void)? = nil) {
         let cacheKey = NSString(string: urlString)
         
         if let image = cache.object(forKey: cacheKey) {
@@ -42,6 +41,10 @@ class GFAvatarImageView: UIImageView {
         guard let url = URL(string: urlString) else { return }
         
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            defer { DispatchQueue.main.async {
+                completion?()
+            } }
+            
             guard let self = self else { return }
             if error != nil { return }
             

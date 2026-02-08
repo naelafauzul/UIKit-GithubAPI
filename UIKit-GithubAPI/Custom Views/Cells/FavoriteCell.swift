@@ -33,14 +33,16 @@ class FavoriteCell: UITableViewCell {
     
     func set(favorite: Follower) {
         usernameLabel.text = favorite.login
-        avatarImageView.downloadImage(from: favorite.avatarUrl) { [weak self] in
-            self?.spinner.stopAnimating()
+        NetworkManager.shared.downloadImage(from: favorite.avatarUrl) { [weak self] image in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.avatarImageView.image = image
+            }
         }
     }
     
     private func configure() {
-        addSubview(avatarImageView)
-        addSubview(usernameLabel)
+        addSubviews(avatarImageView, usernameLabel)
         
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
                 usernameLabel.translatesAutoresizingMaskIntoConstraints = false

@@ -12,7 +12,7 @@ protocol UserInfoViewControllerDelegate: AnyObject {
     func didTapGetFollowers(for user: User)
 }
 
-class UserInfoViewController: UIViewController {
+class UserInfoViewController: GFDataLoadingViewViewController {
     
     let headerView = UIView()
     let itemViewOne = UIView()
@@ -77,7 +77,7 @@ class UserInfoViewController: UIViewController {
         self.add(childVC: repoItemVC, to: self.itemViewOne)
         self.add(childVC: followerItemVC, to: self.itemViewTwo)
         
-        self.dateLabel.text = "GitHub Since: \(user.createdAt.convertToDisplayFormat())"
+        self.dateLabel.text = "GitHub Since: \(user.createdAt.convertToMonthYearFormat())"
     }
     
     func layoutUI() {
@@ -94,7 +94,7 @@ class UserInfoViewController: UIViewController {
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            headerView.heightAnchor.constraint(equalToConstant: 180),
+            headerView.heightAnchor.constraint(equalToConstant: 210),
             
             itemViewOne.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: padding),
             itemViewOne.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
@@ -109,7 +109,7 @@ class UserInfoViewController: UIViewController {
             dateLabel.topAnchor.constraint(equalTo: itemViewTwo.bottomAnchor, constant: padding),
             dateLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
             dateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            dateLabel.heightAnchor.constraint(equalToConstant: 18)
+            dateLabel.heightAnchor.constraint(equalToConstant: 50)
             
         ])
     }

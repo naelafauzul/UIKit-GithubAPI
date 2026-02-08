@@ -55,8 +55,7 @@ class GFItemInfoViewController: UIViewController {
     }
     
     private func layoutUI() {
-        view.addSubview(stackView)
-        view.addSubview(actionButton)
+        view.addSubviews(stackView, actionButton)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         actionButton.translatesAutoresizingMaskIntoConstraints = false
@@ -106,7 +105,7 @@ struct GFItemInfoVCWrapper: UIViewControllerRepresentable {
             htmlUrl: "https://github.com/naelafauzul",
             following: 80,
             followers: 120,
-            createdAt: "2020-01-01T00:00:00Z"
+            createdAt: Date()
         )
         
         let vc = GFItemInfoViewController(user: mockUser)

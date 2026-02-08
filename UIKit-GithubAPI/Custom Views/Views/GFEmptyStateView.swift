@@ -21,25 +21,24 @@ class GFEmptyStateView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(message: String){
-        super.init(frame: .zero)
+    convenience init(message: String){
+        self.init(frame: .zero)
         messageLabel.text = message
         configure()
     }
     
     private func configure(){
-        addSubview(messageLabel)
-        addSubview(logoImageView)
+        addSubviews(messageLabel, logoImageView)
         
         messageLabel.numberOfLines = 3
         messageLabel.textColor = .secondaryLabel
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        logoImageView.image = UIImage(named: "empty-state-logo")
+        logoImageView.image = Images.emptyStateImage
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        
         NSLayoutConstraint.activate([
+            messageLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
             messageLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -150),
             messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 40),
             messageLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -40),

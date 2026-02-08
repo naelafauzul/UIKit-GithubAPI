@@ -35,16 +35,11 @@ class GFUserInfoHeaderViewController: UIViewController {
     }
     
     func addSubviews() {
-        view.addSubview(avatarImageView)
-        view.addSubview(usernameLabel)
-        view.addSubview(nameLabel)
-        view.addSubview(locationImageView)
-        view.addSubview(locationLabel)
-        view.addSubview(bioLabel)
+        view.addSubviews(avatarImageView, usernameLabel, nameLabel, locationImageView, locationLabel, bioLabel)
     }
     
     func configureUIElements() {
-        avatarImageView.downloadImage(from: user.avatarUrl)
+        downloadAvatarImage()
         usernameLabel.text = user.login
         nameLabel.text = user.name ?? "No name"
         locationLabel.text = user.location ?? "No location"
@@ -53,6 +48,15 @@ class GFUserInfoHeaderViewController: UIViewController {
         
         locationImageView.image = UIImage(systemName: SFSymbols.location)
         locationImageView.tintColor = .secondaryLabel
+    }
+    
+    func downloadAvatarImage() {
+        NetworkManager.shared.downloadImage(from: user.avatarUrl) { [weak self] image in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.avatarImageView.image = image
+            }
+        }
     }
     
     func layoutUI() {
@@ -90,7 +94,7 @@ class GFUserInfoHeaderViewController: UIViewController {
             bioLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: textImagePadding),
             bioLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
             bioLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            bioLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 60),
+            bioLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 90),
         ])
     }
 }
@@ -111,7 +115,7 @@ struct GFUserInfoHeaderViewControllerPreview: UIViewControllerRepresentable {
             htmlUrl: "https://github.com/naelafauzul",
             following: 120,
             followers: 340,
-            createdAt: "2020-01-15T00:00:00Z"
+            createdAt: Date()
         )
         
         return GFUserInfoHeaderViewController(user: dummyUser)

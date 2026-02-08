@@ -9,7 +9,7 @@ import UIKit
 
 class GFAlertViewController: UIViewController {
     
-    let containerView = UIView()
+    let containerView = GFAlertContainerView()
     let titleLabel = GFTitleLabel(textAlignment: .center, fontSize: 20)
     let messageLabel = GFBodyLabel(textAlignment: .center)
     let actionButton = GFButton(backgroundColor: .systemPink, title: "OK")
@@ -33,7 +33,10 @@ class GFAlertViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.75)
+        view.addSubview(containerView)
+        containerView.addSubviews(titleLabel, messageLabel, actionButton)
+
         configureContainerView()
         configureTitleLabel()
         configureActionButton()
@@ -41,13 +44,8 @@ class GFAlertViewController: UIViewController {
     }
     
     func configureContainerView() {
-        view.addSubview(containerView)
-        containerView.backgroundColor = .systemBackground
-        containerView.layer.cornerRadius = 10
-        containerView.layer.borderColor = UIColor.white.cgColor
-        containerView.layer.borderWidth = 2
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -57,7 +55,6 @@ class GFAlertViewController: UIViewController {
     }
     
     func configureTitleLabel() {
-        containerView.addSubview(titleLabel)
         titleLabel.text = alertTitle ?? "Something went wrong"
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -71,7 +68,6 @@ class GFAlertViewController: UIViewController {
     }
     
     func configureActionButton() {
-        containerView.addSubview(actionButton)
         actionButton.setTitle(buttonTitle ?? "OK", for: .normal)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         actionButton.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
@@ -85,7 +81,6 @@ class GFAlertViewController: UIViewController {
     }
     
     func configureBodyLabel() {
-        containerView.addSubview(messageLabel)
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.text = message ?? "Unable to complete request. Please try again."
         messageLabel.numberOfLines = 4
